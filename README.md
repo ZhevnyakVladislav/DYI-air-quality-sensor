@@ -1,40 +1,64 @@
-# Light
+# Air Quality Sensor
 
-This example creates a Color Temperature Light device using the ESP
-Matter data model.
+This project creates an Air Quality Sensor device using the ESP Matter data model with an e-ink display dashboard showing temperature, humidity, and pressure readings from an indoor BME280 sensor.
 
 See the [docs](https://docs.espressif.com/projects/esp-matter/en/latest/esp32/developing.html) for more information about building and flashing the firmware.
 
-## 1. Additional Environment Setup
+## Features
 
-No additional setup is required.
+- **Indoor Environmental Monitoring**: Temperature, Humidity, and Pressure measurements via BME280 sensor
+- **e-ink Display Dashboard**: Real-time data visualization on a 296x128 pixel display
+- **Matter over Thread Support**: Full ESP Matter integration for smart home compatibility
 
-## 2. Post Commissioning Setup
+## Hardware
 
-No additional setup is required.
+- **MCU**: ESP32-C3 (primary) or ESP32/S3/C6 variants
+- **Sensor**: BME26
+- **Sensor**: BME280 (I2C interface)
+- **Display**: 2.7" e-ink display (SPI interface)
 
-## 3. Device Performance
+## Setup
 
-### 3.1 Memory usage
+### 1. Environment Setup
 
-The following is the Memory and Flash Usage.
+Set the required environment variables:
 
--   `Bootup` == Device just finished booting up. Device is not
-    commissionined or connected to wifi yet.
--   `After Commissioning` == Device is conneted to wifi and is also
-    commissioned and is rebooted.
--   device used: esp32c3_devkit_m
--   tested on:
-    [6a244a7](https://github.com/espressif/esp-matter/commit/6a244a7b1e5c70b0aa1bf57254f19718b0755d95)
-    (2022-06-16)
+```bash
+export ESP_MATTER_PATH=/path/to/esp-matter
+export ESP_IDF_PATH=/path/to/esp-idf
+```
 
-|                         | Bootup | After Commissioning |
-|:-                       |:-:     |:-:                  |
-|**Free Internal Memory** |108KB   |105KB                |
+### 2. Building and Flashing
 
-**Flash Usage**: Firmware binary size: 1.26MB
+```bash
+idf.py build flash monitor
+```
 
-This should give you a good idea about the amount of free memory that is
-available for you to run your application's code.
+### 3. Device Configuration
 
-Applications that do not require BLE post commissioning, can disable it using app_ble_disable() once commissioning is complete. It is not done explicitly because of a known issue with esp32c3 and will be fixed with the next IDF release (v4.4.2).
+After flashing, the device will:
+
+1. Initialize the BME280 sensor via I2C
+2. Display startup information on the e-ink display
+3. Begin measuring and displaying environmental data
+
+## Project Structure
+
+```
+main/
+  ├── main.cpp              - Main application entry point
+  ├── WeatherSensor.cpp/.h  - BME280 sensor interface
+  ├── EpdDriver.cpp/.h      - e-ink display driver
+  ├── Graphics.cpp/.h       - Display graphics library
+  ├── MatterNode.cpp/.h     - Matter device configuration
+  ├── drivers/              - BME280 driver files
+  ├── fonts/                - Display font files
+  └── icons/                - Display icon definitions
+```
+
+## Device Performance
+
+- **Memory**: ~105-108KB free internal RAM after commissioning
+- **Flash Usage**: ~1.3MB firmware binary
+- **Update Interval**: Display refreshes every 30 seconds
+- **Sensor Sampling**: Continuous BME280 measurements
